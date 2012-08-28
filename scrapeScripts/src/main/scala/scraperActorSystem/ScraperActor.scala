@@ -5,8 +5,9 @@ import scala.collection.JavaConversions._
 import akka.actor._
 
 case class Message(url:String)
+case class Result(list:List[(String, String)])
 
-class ScraperActor(listener:ActorRef) extends Actor {
+class ScraperActor() extends Actor {
 
   def getLinks(url:String):List[(String, String)] = {
     val doc = Jsoup.connect(url).timeout(0).get()
@@ -17,7 +18,7 @@ class ScraperActor(listener:ActorRef) extends Actor {
   def receive = {
     case Message(url) =>
       val lnks = getLinks(url).toList  
-      listener ! "Done"      
+      sender ! Result(lnks)      
   }
 }
 

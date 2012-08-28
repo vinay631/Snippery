@@ -14,6 +14,6 @@ libraryDependencies ++= Seq(
   "net.databinder" %% "dispatch-tagsoup" % "0.8.8",
   "org.jsoup" % "jsoup" % "1.6.3",
   "org.ccil.cowan.tagsoup" % "tagsoup" % "1.2.1",
-  "com.mongodb.casbah" % "casbah_2.9.0-1" % "2.1.5.0"
+  "com.mongodb.casbah" % "casbah_2.9.1" % "2.1.5-1"
 )
 

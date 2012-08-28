@@ -1,19 +1,24 @@
-import scraperActorSystem.Message
-import scraperActorSystem.ScraperActor
-import scraperActorSystem.ListenerActor
 import akka.actor._
-import akka.routing.RoundRobinRouter
+import akka.dispatch.Await
+import akka.dispatch.Future
+import akka.pattern.ask
+import akka.util.duration._
+import akka.util.Timeout
+import com.mongodb.casbah.Imports._
+import scraperActorSystem.ListenerActor
 
-class ScrapeRecipes(numPages:Int = 190) {
-  val activeStateURL = "http://code.activestate.com/recipes/langs/python/?page="
-  val nrOfWorkers = 3
-
+class ScrapeRecipes() {
+  implicit val timeout = Timeout(200 seconds)
+  
   def scrape() = {
     val system = ActorSystem()
-    val listener = system.actorOf(Props(new ListenerActor(numPages)))
-    val scraper = system.actorOf(Props(new ScraperActor(listener)).withRouter(RoundRobinRouter(nrOfWorkers)))  
-
-    (1 to numPages).foreach(i => scraper ! Message(activeStateURL + i.toString))
+    val listener = system.actorOf(Props[ListenerActor])
+    val future = listener ? "Start" 
+    val result = Await.result(future, timeout.duration).asInstanceOf[List[(String, String)]]   
+    system.shutdown()
+    println("Exporting to mongo")
+    val importMongo = new DownloadRecipe(result)
+    importMongo.download
   }
 }
 

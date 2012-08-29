@@ -11,7 +11,8 @@ class ScraperActor() extends Actor {
 
   def getLinks(url:String):List[(String, String)] = {
     val doc = Jsoup.connect(url).timeout(0).get()
-    val links = doc.select("span.recipe-title").map(x => (x.select("a[href]").attr("abs:href"), x.select("a[href]").text)).toList
+    val links = doc.select("span.recipe-title").map(x => (x.select("a[href]").attr("abs:href"),
+                                            x.select("a[href]").text)).toList
     links
   }
   

@@ -11,7 +11,7 @@ class DownloadRecipe(links:List[(String, String)]) {
       try {    
         mongoDB.insert(MongoDBObject("title" -> l._2, "code" -> getData(l._1), "lang" -> "python"))
       } catch {
-        case _ => println("bad url : " + l._1)
+        case _ => println("bad url : " + l._1) 
       }
     )
   }
